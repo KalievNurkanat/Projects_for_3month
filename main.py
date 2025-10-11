@@ -7,10 +7,19 @@ def main(page: ft.Page):
     now = datetime.now()
 
     greeting_text = ft.Text("Hello world",size=25)
-    name_input = ft.TextField(label="Enter your name: ")
+    counter_theme_text = ft.Text("",size=18)
+    counter = 0
+
+
+    greeting_history = []
+    history_text = ft.Text("Story of greeting: ",size=25)
  
     def on_button_click(_):
+        timestamp = datetime.now().strftime("%H:%M:%S")
         if name_input.value:
+            greeting_history.append(f"{timestamp}| {name_input.value}")
+            history_text.value = "Story greeting: \n" + "\n".join(greeting_history)
+
             if now.hour >= 6 and now.hour < 12:
                 greeting_text.value = f"Good morning {name_input.value}"
             
@@ -39,12 +48,33 @@ def main(page: ft.Page):
 
         else:
             page.theme_mode = ft.ThemeMode.DARK
-
+        
+        nonlocal counter
+        counter += 1
+        counter_theme_text.value = f"Theme was changed {counter} times"
         page.update()
 
-    button= ft.ElevatedButton("SEND",icon=ft.Icons.SEND,on_click=on_button_click)
+    name_input = ft.TextField(label="Enter your name: ",on_submit=on_button_click)
     button_for_theme = ft.ElevatedButton("CHANGE THEME",ft.Icons.BRIGHTNESS_7, on_click=button_change_theme)
 
-    page.add(name_input,button,greeting_text,button_for_theme)
+    theme_button = ft.Row(
+        [button_for_theme],
+        alignment = ft.MainAxisAlignment.CENTER,
+    )
+
+    theme_text = ft.Row(
+        [counter_theme_text],
+        alignment = ft.MainAxisAlignment.CENTER,
+    )
+
+    story_greeting_text = ft.Row(
+        [history_text],
+        alignment = ft.MainAxisAlignment.END,
+    )
+
+
+    page.add(name_input,greeting_text,theme_button,theme_text,story_greeting_text)
+
+    
 
 ft.app(target=main)
