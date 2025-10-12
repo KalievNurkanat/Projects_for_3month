@@ -10,15 +10,24 @@ def main(page: ft.Page):
     counter_theme_text = ft.Text("",size=18)
     counter = 0
 
-
     greeting_history = []
-    history_text = ft.Text("Story of greeting: ",size=25)
+    history_text = ft.Text("Story of greeting: \n",size=25)
  
     def on_button_click(_):
         timestamp = datetime.now().strftime("%H:%M:%S")
-        if name_input.value:
-            greeting_history.append(f"{timestamp}| {name_input.value}")
-            history_text.value = "Story greeting: \n" + "\n".join(greeting_history)
+        if name_input.value and len(name_input.value) <= 12:
+            greeting_history.append((timestamp, name_input.value))
+            spans_submit = []
+            if page.theme_mode == ft.ThemeMode.DARK:
+                for ts, val in greeting_history:
+                    spans_submit.append(ft.TextSpan(f"{ts} ", style=ft.TextStyle(color=ft.Colors.WHITE)))
+                    spans_submit.append(ft.TextSpan(f"{val}\n", style=ft.TextStyle(color=ft.Colors.BLUE)))
+            else:
+                for ts, val in greeting_history:
+                    spans_submit.append(ft.TextSpan(f"{ts} ", style=ft.TextStyle(color=ft.Colors.BLACK)))
+                    spans_submit.append(ft.TextSpan(f"{val}\n", style=ft.TextStyle(color=ft.Colors.RED)))
+
+            history_text.spans = spans_submit
 
             if now.hour >= 6 and now.hour < 12:
                 greeting_text.value = f"Good morning {name_input.value}"
@@ -34,20 +43,31 @@ def main(page: ft.Page):
             
             else:
                 greeting_text.value = "Time is not defined"
-
-            name_input.value = ""
             
         else:
-            greeting_text.value = "Please Enter ur name"
-
+            if not name_input.value:
+               greeting_text.value = "Please Enter ur name"
+            if len(name_input.value) > 12:
+               greeting_text.value = "You are allowed to print maximum 12 letters"
+ 
+        name_input.value = ""
         page.update()
 
-    def button_change_theme(_):
-        if page.theme_mode == ft.ThemeMode.DARK:
-            page.theme_mode = ft.ThemeMode.LIGHT
 
+    def button_change_theme(_):
+        spans_click=[]
+        if page.theme_mode == ft.ThemeMode.DARK:
+           page.theme_mode = ft.ThemeMode.LIGHT
+           for ts, val in greeting_history:
+               spans_click.append(ft.TextSpan(f"{ts} ", style=ft.TextStyle(color=ft.Colors.BLACK)))
+               spans_click.append(ft.TextSpan(f"{val}\n", style=ft.TextStyle(color=ft.Colors.RED)))
         else:
             page.theme_mode = ft.ThemeMode.DARK
+            for ts, val in greeting_history:
+                spans_click.append(ft.TextSpan(f"{ts} ", style=ft.TextStyle(color=ft.Colors.WHITE)))
+                spans_click.append(ft.TextSpan(f"{val}\n", style=ft.TextStyle(color=ft.Colors.BLUE)))
+
+        history_text.spans = spans_click
         
         nonlocal counter
         counter += 1
@@ -72,9 +92,6 @@ def main(page: ft.Page):
         alignment = ft.MainAxisAlignment.END,
     )
 
-
     page.add(name_input,greeting_text,theme_button,theme_text,story_greeting_text)
-
-    
 
 ft.app(target=main)
