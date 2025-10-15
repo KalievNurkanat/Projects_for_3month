@@ -11,15 +11,18 @@ def main(page: ft.Page):
     counter = 0
 
     greeting_history = []
-    history_text = ft.Text("Story of greeting: \n",size=25)
+    history_text = ft.Text(f"Story of greeting: \n",size=25)
  
     def on_button_click(_):
         timestamp = datetime.now().strftime("%H:%M:%S")
         if name_input.value and len(name_input.value) <= 12:
-            greeting_history.append(ft.TextSpan(f"{timestamp}| {name_input.value}\n",
-                                                style=ft.TextStyle(color=ft.Colors.BLUE,
-                                                weight=ft.FontWeight.BOLD)))
-
+            greeting_history.append(
+                ft.TextSpan(text=f"{timestamp}| ",style=ft.TextStyle(color=ft.Colors.RED)))
+            greeting_history.append(
+                ft.TextSpan(text=f"{name_input.value}\n",style=ft.TextStyle(color=ft.Colors.BLUE,
+                                                         weight=ft.FontWeight.BOLD))
+            )
+            
             history_text.spans = greeting_history
 
             if now.hour >= 6 and now.hour < 12:
