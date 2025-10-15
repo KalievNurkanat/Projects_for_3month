@@ -11,17 +11,16 @@ def main(page: ft.Page):
     counter = 0
 
     greeting_history = []
-    history_text = ft.Text(f"Story of greeting: \n",size=25)
+    history_text = ft.Text(f"Story of greetings: \n",size=25)
  
     def on_button_click(_):
         timestamp = datetime.now().strftime("%H:%M:%S")
         if name_input.value and len(name_input.value) <= 12:
             greeting_history.append(
-                ft.TextSpan(text=f"{timestamp}| ",style=ft.TextStyle(color=ft.Colors.RED)))
+                ft.TextSpan(text=f"{timestamp} ",style=ft.TextStyle(color=ft.Colors.RED)))
             greeting_history.append(
                 ft.TextSpan(text=f"{name_input.value}\n",style=ft.TextStyle(color=ft.Colors.BLUE,
-                                                         weight=ft.FontWeight.BOLD))
-            )
+                                                         weight=ft.FontWeight.BOLD)))
             
             history_text.spans = greeting_history
 
@@ -74,8 +73,7 @@ def main(page: ft.Page):
     theme_text = ft.Row([counter_theme_text], alignment = ft.MainAxisAlignment.CENTER)
     story_greeting_text = ft.Row([history_text], alignment = ft.MainAxisAlignment.END)
     text_clear = ft.Row([button_clear], alignment=ft.MainAxisAlignment.START)
-
-
+    
     page.add(name_input,
              greeting_text,
              theme_button,
